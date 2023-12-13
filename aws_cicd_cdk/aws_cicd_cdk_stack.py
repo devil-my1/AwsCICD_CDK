@@ -1,19 +1,31 @@
+import os
 from aws_cdk import (
-    # Duration,
-    Stack,
-    # aws_sqs as sqs,
+    Stack
+)
+from aws_cdk.pipelines import (
+    CodePipeline,
+    CodePipelineSource,
+    ShellStep,
+    ManualApprovalStep,
 )
 from constructs import Construct
+
 
 class AwsCicdCdkStack(Stack):
 
     def __init__(self, scope: Construct, construct_id: str, **kwargs) -> None:
         super().__init__(scope, construct_id, **kwargs)
 
-        # The code that defines your stack goes here
+        # Set up pilpline
+        pipeline = CodePipeline(self, "Pipeline",
+                                pipeline_name="MyPipeline",
+                                synth=ShellStep("Synth",
+                                                input=CodePipelineSource.git_hub(
+                                                    "devil-my1/AwsCICD_CDK", "main"),
+                                                commands=["npm install -g aws-cdk",
+                                                          "python -m pip install -r requirements.txt",
+                                                          "cdk synth"]
+                                                )
+                                )
 
-        # example resource
-        # queue = sqs.Queue(
-        #     self, "AwsCicdCdkQueue",
-        #     visibility_timeout=Duration.seconds(300),
-        # )
+        # Source stage
