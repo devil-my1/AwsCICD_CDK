@@ -10,7 +10,7 @@ from aws_cdk.pipelines import (
 )
 from constructs import Construct
 
-from pipeline_app_stage import PipelineAppStage
+from aws_cicd_cdk.pipeline_app_stage import PipelineAppStage
 
 
 class AwsCicdCdkStack(Stack):
