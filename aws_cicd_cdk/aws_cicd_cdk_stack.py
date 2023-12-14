@@ -1,4 +1,4 @@
-import os
+import aws_cdk as cdk
 from aws_cdk import (
     Stack
 )
@@ -9,6 +9,8 @@ from aws_cdk.pipelines import (
     ManualApprovalStep,
 )
 from constructs import Construct
+
+from pipeline_app_stage import PipelineAppStage
 
 
 class AwsCicdCdkStack(Stack):
@@ -29,3 +31,10 @@ class AwsCicdCdkStack(Stack):
                                 )
 
         # Source stage
+        testing_stage = pipeline.add_stage(PipelineAppStage(self,"test",env=cdk.Environment(account="241916871697",
+                                    region="ap-northeast-1")))
+        
+        testing_stage.add_post(ManualApprovalStep("Manual approval before production"))
+        
+        production_stage = pipeline.add_stage(PipelineAppStage(self,"prod",env=cdk.Environment(account="241916871697",
+                                    region="ap-northeast-1")))
